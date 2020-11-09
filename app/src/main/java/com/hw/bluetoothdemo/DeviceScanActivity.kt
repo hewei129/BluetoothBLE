@@ -25,6 +25,7 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.hw.bluetoothlib.MyBluetoothDevice
+import com.hw.bluetoothlib.calDistance
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -217,6 +218,8 @@ class DeviceScanActivity : ListActivity() {
         invalidateOptionsMenu()
     }
 
+
+
     // Adapter for holding devices found through scanning.
     private inner class LeDeviceListAdapter : BaseAdapter() {
         private val mLeDevices: ArrayList<MyBluetoothDevice> = ArrayList()
@@ -262,6 +265,7 @@ class DeviceScanActivity : ListActivity() {
                 viewHolder.deviceAddress = view.findViewById<View>(R.id.device_address) as TextView
                 viewHolder.deviceName = view.findViewById<View>(R.id.device_name) as TextView
                 viewHolder.deviceRssi = view.findViewById<View>(R.id.device_rssi) as TextView
+                viewHolder.deviceDis = view.findViewById<View>(R.id.device_distance) as TextView
                 view.tag = viewHolder
             } else {
                 viewHolder = view.tag as ViewHolder
@@ -272,6 +276,7 @@ class DeviceScanActivity : ListActivity() {
                 viewHolder.deviceName?.text = deviceName else viewHolder.deviceName?.setText(R.string.unknown_device)
             viewHolder.deviceAddress?.text = device.getBluetoothDevice().address
             viewHolder.deviceRssi?.text = "Rssi: " + device.getRssi()
+            viewHolder.deviceDis?.text = "Distance: "+ calDistance(device.getRssi().toDouble())
             return view!!
         }
 
@@ -302,6 +307,7 @@ class DeviceScanActivity : ListActivity() {
             var deviceName: TextView? = null
             var deviceAddress: TextView? = null
             var deviceRssi: TextView? = null
+            var deviceDis: TextView? = null
         }
 
     }
@@ -333,6 +339,7 @@ class DeviceScanActivity : ListActivity() {
         ) {
             super.onScanResult(callbackType, result)
             val device = result.device
+            Log.i(DeviceScanActivity.TAG, "callbackType: $callbackType")
             Log.i(DeviceScanActivity.TAG, "rssi: " + result.rssi)
             Log.i(DeviceScanActivity.TAG, "device: " + device.name)
             runOnUiThread {
